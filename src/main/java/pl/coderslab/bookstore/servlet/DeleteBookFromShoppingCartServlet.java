@@ -12,8 +12,8 @@ import javax.servlet.http.HttpServletResponse;
 import javax.servlet.http.HttpSession;
 import java.io.IOException;
 
-@WebServlet("/shoppingcart/addbook")
-public class AddBookToShoppingCartServlet extends HttpServlet {
+@WebServlet("/shoppingcart/deletebook")
+public class DeleteBookFromShoppingCartServlet extends HttpServlet {
 
     private static final String SHOPPING_CART_SESSION_ATTRIBUTE_NAME = "shoppingcart";
 
@@ -21,15 +21,6 @@ public class AddBookToShoppingCartServlet extends HttpServlet {
 
     @Override
     protected void doPost(HttpServletRequest request, HttpServletResponse response) throws ServletException, IOException {
-        handleRequestInternal(request, response);
-    }
-
-    @Override
-    protected void doGet(HttpServletRequest request, HttpServletResponse response) throws ServletException, IOException {
-        handleRequestInternal(request, response);
-    }
-
-    private void handleRequestInternal(HttpServletRequest request, HttpServletResponse response) throws IOException {
 
         String[] ids = request.getParameterValues("id");
 
@@ -48,22 +39,15 @@ public class AddBookToShoppingCartServlet extends HttpServlet {
 
                         if (o instanceof ShoppingCart) {
                             ShoppingCart sc = (ShoppingCart) o;
-                            sc.addBook(book);
-                        } else {
-
-                            ShoppingCart sc = new ShoppingCart();
-                            sc.addBook(book);
-                            session.setAttribute(SHOPPING_CART_SESSION_ATTRIBUTE_NAME, sc);
+                            sc.deleteBook(book);
                         }
                     }
                 }
             }
-            // TODO: To przekierowanie nie do końca działa tak jak powinno tj. adres ma jaki zostaje przekierowany użytkownik jest blędny. Jak to możemy poprawić?
-            // TODO: Utworzyć zasówb GET shopping/books prezentujący w postaci tabelarycznej wszystkie książki znajdujące się w koszyku
-            // TODO: Sprawdzić jak zachowuje się koszyk zakupów tzn. jakie elementy się w nim znajdują w przypadku kiedy logujemy się z różnych przeglądarek (różne sesje)
+
             response.sendRedirect("/bookstore/shoppingcart/books");
 
-        } catch (NumberFormatException e) {
+        } catch(NumberFormatException e) {
             e.printStackTrace();
         }
     }
